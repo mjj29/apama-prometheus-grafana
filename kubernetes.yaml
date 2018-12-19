@@ -1,0 +1,141 @@
+apiVersion: v1
+kind: Pod
+metadata:
+   name: grafana-server
+   labels:
+      app: grafana-server
+spec:
+   containers:
+     - name: grafana-server
+       image: grafana/grafana
+       ports:
+          - containerPort: 3000
+       volumeMounts:
+       - name: conf-dashboards-volume
+         mountPath: /etc/grafana/provisioning/dashboards
+       - name: conf-datasources-volume
+         mountPath: /etc/grafana/provisioning/datasources
+       - name: dashboards-volume
+         mountPath: /etc/grafana/dashboards
+   volumes:
+     - name: conf-dashboards-volume
+       configMap:
+          name: grafana-conf-dashboards
+     - name: conf-datasources-volume
+       configMap:
+          name: grafana-conf-datasources
+     - name: dashboards-volume
+       configMap:
+          name: grafana-dashboards
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+   name: grafana
+spec:
+   selector:
+      app: grafana-server
+   type: NodePort
+   ports:
+   - protocol: TCP
+     port: 3000
+--- 
+apiVersion: v1
+kind: Pod
+metadata:
+   name: prometheus-server
+   labels:
+      app: prometheus-server
+spec:
+   containers:
+     - name: prometheus-server
+       image: prom/prometheus
+       ports:
+          - containerPort: 9090
+       volumeMounts:
+       - name: config-volume
+         mountPath: /etc/prometheus
+   volumes:
+     - name: config-volume
+       configMap:
+          name: prometheus-config
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+   name: prometheus
+spec:
+   selector:
+      app: prometheus-server
+   ports:
+   - protocol: TCP
+     port: 9090
+     targetPort: 9090
+--- 
+apiVersion: v1
+kind: Pod
+metadata:
+   name: apama-server
+   labels:
+      app: apama-server
+spec:
+   containers:
+     - name: apama-server
+       image: store/softwareag/apama-correlator:10.3
+       command: ["correlator", "--config", "/apama_work"]
+       ports:
+          - containerPort: 15903
+       volumeMounts:
+       - name: config-volume
+         mountPath: /apama_work
+   volumes:
+     - name: config-volume
+       configMap:
+          name: apama-config
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+   name: apama
+spec:
+   selector:
+      app: apama-server
+   ports:
+   - protocol: TCP
+     port: 15903
+     targetPort: 15903
+--- 
+apiVersion: v1
+kind: Pod
+metadata:
+   name: sender-server
+   labels:
+      app: sender-server
+spec:
+   containers:
+     - name: sender-server
+       image: store/softwareag/apama-correlator:10.3
+       command: ["correlator", "--config", "/apama_work"]
+       ports:
+          - containerPort: 15903
+       volumeMounts:
+       - name: config-volume
+         mountPath: /apama_work
+   volumes:
+     - name: config-volume
+       configMap:
+          name: sender-config
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+   name: sender
+spec:
+   selector:
+      app: sender-server
+   ports:
+   - protocol: TCP
+     port: 15903
+     targetPort: 15903
+--- 
+

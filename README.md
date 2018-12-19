@@ -18,6 +18,34 @@ Once you're done to shut down the stack run:
 
     docker stack rm prometheus
 
+## Using this repository with Kubernetes
+
+To instead deploy with Kubernetes, you must run the following:
+
+    kubectl create namespace prometheus
+	 kubectl --namespace prometheus create configmap grafana-conf-dashboards --from-file=grafana-config/dashboards/
+	 kubectl --namespace prometheus create configmap grafana-conf-datasources --from-file=grafana-config/datasources/
+    kubectl --namespace prometheus create configmap grafana-dashboards --from-file=grafana-dashboards/
+    kubectl --namespace prometheus create configmap prometheus-config --from-file=prometheus/
+    kubectl --namespace prometheus create configmap apama-config --from-file=apama/
+    kubectl --namespace prometheus create configmap sender-config --from-file=sender/
+	 kubectl --namespace prometheus create -f kubernetes.yaml 
+
+You can get the exposed port using this command (look for NodePort):
+
+	 kubectl --namespace prometheus describe service grafana
+
+And to shut everything down run:
+
+	 kubectl --namespace prometheus delete -f kubernetes.yaml 
+	 kubectl --namespace prometheus delete configmap grafana-conf-dashboards
+	 kubectl --namespace prometheus delete configmap grafana-conf-datasources
+    kubectl --namespace prometheus delete configmap grafana-dashboards
+    kubectl --namespace prometheus delete configmap prometheus-config
+    kubectl --namespace prometheus delete configmap apama-config
+    kubectl --namespace prometheus delete configmap sender-config
+    kubectl delete namespace prometheus
+
 ## Using Grafana
 
 Select Home and then Apama Monitoring. Here you will see a standard Apama Grafana dashboard showing the state of the running process. You'll see four graphs:

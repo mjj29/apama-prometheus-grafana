@@ -49,21 +49,21 @@ services:
 
 configs:
   prom_config_apama:
-    file: ./prometheus.yml
+    file: ./prometheus/prometheus.yml
   grafana_config_prom:
-    file: ./grafana-datasource.yml
+    file: ./grafana-config/datasources/prometheus.yml
   grafana_config_dash:
-    file: ./grafana-dashboard.yml
+    file: ./grafana-config/dashboards/apama.yml
   grafana_dash_apama:
-    file: ./grafana-dashboard.json
+    file: ./grafana-dashboards/apama.json
   apama_config:
-    file: ./correlator.yaml
+    file: ./apama/correlator.yaml
   apama_monitor:
-    file: ./sample.mon
+    file: ./apama/sample.mon
   apama_sender_config:
-    file: ./sender.yaml
+    file: ./sender/sender.yaml
   apama_sender_monitor:
-    file: ./sender.mon
+    file: ./sender/sender.mon
 
 networks:
    prometheus:
