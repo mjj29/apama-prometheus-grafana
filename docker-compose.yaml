@@ -1,0 +1,69 @@
+version: "3.3"
+services:
+   grafana:
+      image: grafana/grafana
+      ports:
+        - 3000
+      networks:
+        - prometheus
+      configs:
+        - source: grafana_config_prom
+          target: /etc/grafana/provisioning/datasources/prometheus.yaml
+        - source: grafana_config_dash
+          target: /etc/grafana/provisioning/dashboards/apama.yaml
+        - source: grafana_dash_apama
+          target: /etc/grafana/dashboards/apama.json
+   prometheus:
+      image: prom/prometheus
+      ports:
+        -  9090
+      networks:
+        - prometheus
+      configs:
+        - source: prom_config_apama
+          target: /etc/prometheus/prometheus.yml
+   apama:
+      image: store/softwareag/apama-correlator:10.3
+      ports: 
+        - 15903
+      networks:
+        - prometheus
+      command: ["correlator", "--config", "/apama_work"]
+      configs:
+        - source: apama_config
+          target: /apama_work/correlator.yaml
+        - source: apama_monitor
+          target: /apama_work/sample.mon
+   sender:
+      image: store/softwareag/apama-correlator:10.3
+      ports: 
+        - 15903
+      networks:
+        - prometheus
+      command: ["correlator", "--config", "/apama_work"]
+      configs:
+        - source: apama_sender_config
+          target: /apama_work/sender.yaml
+        - source: apama_sender_monitor
+          target: /apama_work/sender.mon
+
+configs:
+  prom_config_apama:
+    file: ./prometheus.yml
+  grafana_config_prom:
+    file: ./grafana-datasource.yml
+  grafana_config_dash:
+    file: ./grafana-dashboard.yml
+  grafana_dash_apama:
+    file: ./grafana-dashboard.json
+  apama_config:
+    file: ./correlator.yaml
+  apama_monitor:
+    file: ./sample.mon
+  apama_sender_config:
+    file: ./sender.yaml
+  apama_sender_monitor:
+    file: ./sender.mon
+
+networks:
+   prometheus:

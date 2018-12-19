@@ -1,0 +1,23 @@
+event SampleEvent
+{
+	string s;
+}
+monitor sample
+{
+	integer counter := 0;
+	action onload()
+	{
+		spawn receiver("other") to context("other", true);
+		spawn receiver("one");
+		spawn receiver("two");
+	}
+	action receiver(string name) 
+	{
+		on all SampleEvent() as se {
+			counter := counter + 1;
+		}
+		on all wait(10.0) {
+			log "Count for "+name+" is "+counter.toString() at INFO;
+		}
+	}
+}

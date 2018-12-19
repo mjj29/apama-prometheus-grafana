@@ -1,0 +1,22 @@
+event SampleEvent
+{
+	string s;
+}
+monitor sample
+{
+	action onload()
+	{
+		sendRandomStepData();
+	}
+	action sendRandomStepData()
+	{
+		on wait(1.0.rand()) {
+			integer count := (100).rand();
+			while count > 0 {
+				count := count - 1;
+				send SampleEvent("Hello World") to "correlator";
+			}
+			sendRandomStepData();
+		}
+	}
+}

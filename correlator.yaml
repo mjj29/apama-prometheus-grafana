@@ -1,0 +1,10 @@
+correlator:
+   initialization:
+      list:
+         - ${PARENT_DIR}/sample.mon
+
+engineConnect:
+  - sourceHost: sender
+    sourcePort: 15903
+    channels: [ correlator ]
+
