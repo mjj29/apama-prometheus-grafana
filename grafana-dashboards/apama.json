@@ -91,7 +91,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Input Queue",
+      "title": "Input Stats",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -199,7 +199,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Output Queue",
+      "title": "Output Stats",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -322,7 +322,7 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "bytes",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -330,7 +330,7 @@
           "show": true
         },
         {
-          "format": "short",
+          "format": "bytes",
           "label": null,
           "logBase": 1,
           "max": null,
